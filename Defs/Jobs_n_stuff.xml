@@ -13,4 +13,10 @@
     <!-- Mostly used for hunting, hauling, refueling.  Defaults to true.-->
     <suspendable>false</suspendable>
   </JobDef>
+
+  <JobDef>
+    <defName>DeliverKill</defName>
+    <driverClass>CatsAreJerks.JobDriver_DeliverKillToAppeaseFriend</driverClass>
+    <reportString>deliver presents</reportString>
+  </JobDef>
 </Defs>

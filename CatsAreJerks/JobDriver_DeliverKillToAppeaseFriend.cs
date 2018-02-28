@@ -72,6 +72,37 @@ namespace CatsAreJerks
             yield return Toils_Reserve.Reserve(CellInd, 1, -1, null);
             yield return Toils_Goto.GotoCell(CellInd, PathEndMode.Touch);
             yield return Toils_Haul.PlaceHauledThingInCell(CellInd, null, false);
+            yield return this.Unforbid();
+            foreach (Toil t in this.Nibble())
+            {
+                yield return t;
+            }
+        }
+
+        private Toil Unforbid()
+        {
+            return new Toil
+            {
+                initAction = delegate
+                {
+                    Corpse corpse = this.Corpse;
+                    if (corpse != null)
+                    {
+                        corpse.SetForbidden(false, true);
+                    }
+                },
+                atomicWithPrevious = true
+            };
+        }
+
+        private IEnumerable<Toil> Nibble()
+        {
+            Toil gotoCorpse = Toils_Goto.GotoThing(CorpseInd, PathEndMode.Touch);
+            yield return gotoCorpse;
+            float durationMultiplier = 1f / this.pawn.GetStatValue(StatDefOf.EatingSpeed, true);
+            yield return Toils_Ingest.ChewIngestible(this.pawn, durationMultiplier, CorpseInd, TargetIndex.None).FailOnDespawnedOrNull(CorpseInd).FailOnCannotTouch(CorpseInd, PathEndMode.Touch);
+            yield return Toils_Ingest.FinalizeIngest(this.pawn, CorpseInd);
+            yield return Toils_Jump.JumpIf(gotoCorpse, () => this.pawn.needs.food.CurLevelPercentage < 0.9f);
         }
 
         private Toil FindCellToDropCorpseToil()
@@ -81,7 +112,7 @@ namespace CatsAreJerks
                 initAction = delegate
                 {
                     IntVec3 c = IntVec3.Invalid;
-                    if (!this.TryFindBedroom(out c) || !this.TryFindTableCell(out c))
+                    if (!this.TryFindBedroom(out c) && !this.TryFindTableCell(out c))
                     {
                         bool cellFound = false;
                         if (RCellFinder.TryFindRandomSpotJustOutsideColony(this.pawn, out IntVec3 root) && CellFinder.TryRandomClosewalkCellNear(root, this.pawn.Map, 5, out c, (IntVec3 x) => this.pawn.CanReserve(x, 1, -1, null, false) && x.GetFirstItem(this.pawn.Map) == null))
@@ -151,12 +182,13 @@ namespace CatsAreJerks
         public static Pawn GetMostImportantColonyRelationship(Pawn pawn)
         {
 
-            IEnumerable<Pawn> enumerable = from x in pawn.Map.mapPawns.FreeColonistsAndPrisonersSpawned
-                                           where x.relations.everSeenByPlayer
-                                           select x;
+            IEnumerable<Pawn> freeFriendsOfDeadColonist = from x in pawn.MapHeld.mapPawns.FreeColonistsAndPrisonersSpawned
+                                                           where x.relations.everSeenByPlayer
+                                                            select x;
+
             float num = 0f;
             Pawn pawn2 = null;
-            foreach (Pawn current in enumerable)
+            foreach (Pawn current in freeFriendsOfDeadColonist)
             {
                 PawnRelationDef mostImportantRelation = pawn.GetMostImportantRelation(current);
                 if (mostImportantRelation != null)
@@ -165,6 +197,7 @@ namespace CatsAreJerks
                     {
                         num = mostImportantRelation.importance;
                         pawn2 = current;
+                        Log.Message(pawn2.Label);
                     }
                 }
             }

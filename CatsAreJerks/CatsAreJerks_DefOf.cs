@@ -11,5 +11,6 @@ namespace CatsAreJerks
     public static class CatsAreJerks_JobDefOf
     {
         public static JobDef PetTheCat;
+        public static JobDef DeliverKill;
     }
 }

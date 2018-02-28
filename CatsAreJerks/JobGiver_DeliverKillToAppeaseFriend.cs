@@ -8,9 +8,8 @@ using Verse.AI;
 
 namespace CatsAreJerks
 {
-    public class JobGiver_HaulCorpseToPublicPlace : ThinkNode_JobGiver
+    public class JobGiver_DeliverKillToAppeaseFriend : ThinkNode_JobGiver
     {
-
         public static Corpse GetClosestCorpseToDigUp(Pawn pawn)
         {
             if (!pawn.Spawned)
@@ -62,7 +61,7 @@ namespace CatsAreJerks
             {
                 return null;
             }
-            return new Job(JobDefOf.HaulCorpseToPublicPlace, corpse, building_Grave)
+            return new Job(CatsAreJerks_JobDefOf.DeliverKill, corpse, building_Grave)
             {
                 count = 1
             };
