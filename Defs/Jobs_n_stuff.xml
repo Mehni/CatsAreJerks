@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <JobDef>
+    <defName>PetTheCat</defName>
+    <!-- Link to the JobDriver -->
+    <driverClass>CatsAreJerks.JobDriver_PetTheCat</driverClass>
+    <!-- Shown when the pawn is doing the job. TargetA gets translated. See next chapter. -->
+    <reportString>petting TargetA.</reportString>
+    <!-- Whether or not colony animals can interact with the pawn while they are doing this job. Defaults to true. -->
+    <casualInterruptible>false</casualInterruptible>
+    <!-- Whether or not the Job can be "paused" without having to start over again. -->
+    <!-- Mostly used for hunting, hauling, refueling.  Defaults to true.-->
+    <suspendable>false</suspendable>
+  </JobDef>
+</Defs>

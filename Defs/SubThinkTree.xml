@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!--============= Pre-main behaviour ============-->
+  
+  <ThinkTreeDef>
+    <defName>CatsAreJerks</defName>
+    <insertTag>Animal_PreMain</insertTag>
+    <thinkRoot Class="ThinkNode_ConditionalHasFaction">
+      <subNodes>
+      <li Class="CatsAreJerks.ThinkNode_ConditionalNightTime">
+        <subNodes>
+        <li Class="CatsAreJerks.JobGiver_DisturbThePeace"/>
+      </subNodes>
+      </li>
+      </subNodes>
+      </thinkRoot>
+  </ThinkTreeDef>
+
+          <!-- <li Class="ThinkNode_ConditionalOfPlayerFaction">
+         <subNodes>
+          <li Class="CatsAreJerks.ThinkNode_ConditionalNightTime">
+             <subNodes>
+               <li Class="CatsAreJerks.ThinkNode_ConditionalCatLike">          
+                <subNodes>
+                  <li Class="CatsAreJerks.ThinkNode_ConditionalHasFullHealth">          
+                    <subNodes>
+                      <li Class="CatsAreJerks.JobGiver_DisturbThePeace"/>
+                   </subNodes>
+                  </li>
+                </subNodes>
+              </li>
+            </subNodes>
+          </li>
+        </subNodes>
+        </li> -->
+
+    <!--============= Test of insertion hooks ============-->
+  
+  <!-- If you remove the comments around this, it will inject
+      this AI control node into all ThinkTrees where there is an
+      insertion hook seeking a matching InsertTag.
+      
+      If there are several injections, they'll be ordered by priorty (highest first).
+      
+      This example just makes colonists beat on each other, but modders
+      can add any behavior using these and they'll all work together.-->
+
+  <!-- <ThinkTreeDef>
+    <defName>InsertHookTest</defName>
+    <insertTag>Humanlike_PostMentalState</insertTag>
+    <insertPriority>100</insertPriority>
+    <thinkRoot Class="JobGiver_Berserk" />
+  </ThinkTreeDef> -->
+
+</Defs>
