@@ -72,14 +72,14 @@ namespace CatsAreJerks
             yield return Toils_Reserve.Reserve(CellInd, 1, -1, null);
             yield return Toils_Goto.GotoCell(CellInd, PathEndMode.Touch);
             yield return Toils_Haul.PlaceHauledThingInCell(CellInd, null, false);
-            yield return this.Unforbid();
             foreach (Toil t in this.Nibble())
             {
                 yield return t;
             }
+            yield return this.Forbid();
         }
 
-        private Toil Unforbid()
+        private Toil Forbid()
         {
             return new Toil
             {
@@ -88,7 +88,7 @@ namespace CatsAreJerks
                     Corpse corpse = this.Corpse;
                     if (corpse != null)
                     {
-                        corpse.SetForbidden(false, true);
+                        corpse.SetForbidden(true, true);
                     }
                 },
                 atomicWithPrevious = true
@@ -162,13 +162,14 @@ namespace CatsAreJerks
 
         private bool TryFindBedroom(out IntVec3 cell)
         {
+            //this turned out to be a lot darker than I thought.
             Pawn mostImpactful = GetMostImportantColonyRelationship(Corpse.InnerPawn);
             if (mostImpactful?.ownership?.OwnedRoom != null)
             {
                 Room masterBedroom = mostImpactful.ownership.OwnedRoom;
 
                 IEnumerable<IntVec3> intVec3 = from c in masterBedroom.Cells
-                                               where c.Standable(this.pawn.Map) && !c.IsForbidden(this.pawn) && this.pawn.CanReserveAndReach(c, PathEndMode.OnCell, Danger.None, 1, -1, null, false)
+                                               where c.Standable(this.pawn.Map) && /*!c.IsForbidden(this.pawn) &&*/ this.pawn.CanReserveAndReach(c, PathEndMode.OnCell, Danger.None, 1, -1, null, false)
                                                select c;
 
                 intVec3.TryRandomElement(out IntVec3 vec3);
@@ -181,10 +182,9 @@ namespace CatsAreJerks
 
         public static Pawn GetMostImportantColonyRelationship(Pawn pawn)
         {
-
             IEnumerable<Pawn> freeFriendsOfDeadColonist = from x in pawn.MapHeld.mapPawns.FreeColonistsAndPrisonersSpawned
-                                                           where x.relations.everSeenByPlayer
-                                                            select x;
+                                                          where x.relations.everSeenByPlayer
+                                                          select x;
 
             float num = 0f;
             Pawn pawn2 = null;
@@ -193,11 +193,11 @@ namespace CatsAreJerks
                 PawnRelationDef mostImportantRelation = pawn.GetMostImportantRelation(current);
                 if (mostImportantRelation != null)
                 {
-                    if (pawn2 == null || mostImportantRelation.importance > num)
+                    //importance of 125+ gets ex-wives etc, but not cousins and great grandmothers. Defined in defs. Opinion of is irrelevant.
+                    if (pawn2 == null || (mostImportantRelation.importance > num && mostImportantRelation.importance >= 125))
                     {
                         num = mostImportantRelation.importance;
                         pawn2 = current;
-                        Log.Message(pawn2.Label);
                     }
                 }
             }

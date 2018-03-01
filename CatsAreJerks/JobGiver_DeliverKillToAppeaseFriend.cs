@@ -19,12 +19,12 @@ namespace CatsAreJerks
             Building_Grave building_Grave = (Building_Grave)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Grave), PathEndMode.InteractionCell, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, delegate (Thing x)
             {
                 Building_Grave building_Grave2 = (Building_Grave)x;
-                return building_Grave2.HasCorpse && IsMyCorpseValid(building_Grave2.Corpse, pawn, true);
+                return building_Grave2.HasCorpse && IsChosenCorpseValid(building_Grave2.Corpse, pawn, true);
             }, null, 0, -1, false, RegionType.Set_Passable, false);
             return building_Grave?.Corpse;
         }
 
-        public static bool IsMyCorpseValid(Corpse corpse, Pawn pawn, bool ignoreReachability = false)
+        public static bool IsChosenCorpseValid(Corpse corpse, Pawn pawn, bool ignoreReachability = false)
         {
             if (corpse == null || corpse.Destroyed || !corpse.InnerPawn.RaceProps.Humanlike)
             {
@@ -44,10 +44,17 @@ namespace CatsAreJerks
         
         protected override Job TryGiveJob(Pawn pawn)
         {
-            if (GetClosestCorpseToDigUp(pawn) == null)
+            //see if there's a corpse laying around or available for digging up
+            if (GetClosestCorpseToDigUp(pawn) == null && GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Corpse), PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, delegate (Thing x) //null,
+            {
+                Corpse corpse2 = (Corpse)x;
+                return corpse2.Spawned && corpse2.InnerPawn.BodySize <= pawn.RaceProps.maxPreyBodySize;
+            }, null, 0, -1, false, RegionType.Set_Passable, false) != null)
             {
                 return null;
             }
+
+            //todo: implement 80% roadkill / 20% dig up
             Corpse corpse = GetClosestCorpseToDigUp(pawn);
             Building_Grave building_Grave = corpse.ParentHolder as Building_Grave;
             if (building_Grave != null)

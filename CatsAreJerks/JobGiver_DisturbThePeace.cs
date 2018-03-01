@@ -49,8 +49,8 @@ namespace CatsAreJerks
                 Room masterBedroom = pawnToHarass.ownership.OwnedRoom;
 
                 IEnumerable<IntVec3> intVec3 = from c in masterBedroom.Cells
-                                    where c.Standable(pawn.Map) && !c.IsForbidden(pawn) && pawn.CanReserveAndReach(c, PathEndMode.OnCell, Danger.None, 1, -1, null, false)
-                                    select c;
+                                               where c.Standable(pawn.Map) && !c.IsForbidden(pawn) && pawn.CanReserveAndReach(c, PathEndMode.OnCell, Danger.None, 1, -1, null, false)
+                                               select c;
 
                 intVec3.TryRandomElement(out IntVec3 vec3);
                 return vec3;
