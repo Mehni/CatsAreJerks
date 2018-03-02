@@ -23,6 +23,7 @@ namespace CatsAreJerks
                 if (pawn2.RaceProps.Animal && pawn2.Faction == pawn.Faction
                     && pawn2 != pawn && !pawn2.IsBurning()
                     && !pawn2.InAggroMentalState
+                    && !(pawn2.CurJob.def == JobDefOf.LayDown)
                     && (pawn.relations.DirectRelationExists(PawnRelationDefOf.Bond, pawn2) || (pawn2.playerSettings.RespectedMaster == pawn))
                     && pawn.CanReserveAndReach(pawn2, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false))
                 {

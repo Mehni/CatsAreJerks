@@ -44,30 +44,36 @@ namespace CatsAreJerks
         
         protected override Job TryGiveJob(Pawn pawn)
         {
-            //see if there's a corpse laying around or available for digging up
-            if (GetClosestCorpseToDigUp(pawn) == null && GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Corpse), PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, delegate (Thing x) //null,
-            {
-                Corpse corpse2 = (Corpse)x;
-                return corpse2.Spawned && corpse2.InnerPawn.BodySize <= pawn.RaceProps.maxPreyBodySize;
-            }, null, 0, -1, false, RegionType.Set_Passable, false) != null)
-            {
-                return null;
-            }
+            Corpse corpse = null;
+            Building_Grave building_Grave = null;
 
-            //todo: implement 80% roadkill / 20% dig up
-            Corpse corpse = GetClosestCorpseToDigUp(pawn);
-            Building_Grave building_Grave = corpse.ParentHolder as Building_Grave;
-            if (building_Grave != null)
+            //see if there's a corpse laying around or available for digging up
+            if (Rand.Range(0f, 1f) > 0.2f)
             {
-                if (!pawn.CanReserveAndReach(building_Grave, PathEndMode.InteractionCell, Danger.Deadly, 1, -1, null, false))
+                corpse = (Corpse)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Corpse), PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, delegate (Thing x)
+                {
+                    Corpse corpse2 = (Corpse)x;
+                    return corpse2.Spawned && corpse2.InnerPawn.BodySize <= pawn.RaceProps.maxPreyBodySize;
+                }, null, 0, -1, false, RegionType.Set_Passable, false);
+
+                if (!pawn.CanReserveAndReach(corpse, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false))
                 {
                     return null;
                 }
             }
-            else if (!pawn.CanReserveAndReach(corpse, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false))
+            else
             {
-                return null;
+                corpse = GetClosestCorpseToDigUp(pawn);
+                building_Grave = corpse?.ParentHolder as Building_Grave;
+                if (building_Grave != null)
+                {
+                    if (!pawn.CanReserveAndReach(building_Grave, PathEndMode.InteractionCell, Danger.Deadly, 1, -1, null, false))
+                    {
+                        return null;
+                    }
+                }
             }
+
             return new Job(CatsAreJerks_JobDefOf.DeliverKill, corpse, building_Grave)
             {
                 count = 1

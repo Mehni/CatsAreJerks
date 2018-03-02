@@ -9,10 +9,10 @@ using Verse.AI;
 namespace CatsAreJerks
 {
     //we inherit from ThinkNode_JobGiver to save us some trouble
-    public class JobGiver_PetCats : ThinkNode_JobGiver
+    public class JoyGiver_PetCats : JoyGiver
     {
         //the method that's defined in the inherited method. We override it here and return our job.
-        protected override Job TryGiveJob(Pawn pawn)
+        public override Job TryGiveJob(Pawn pawn)
         {
             //find a cat
             Log.Message(pawn + " is seeking a cat!");
@@ -40,30 +40,36 @@ namespace CatsAreJerks
             {
                 return null;
             }
-            tmpAnimals.Clear();
-            List<Pawn> allPawnsSpawned = pawn.Map.mapPawns.AllPawnsSpawned;
-            for (int i = 0; i < allPawnsSpawned.Count; i++)
+
+            //find bonded animal. If no bonded animal, pick a pet-like creature.
+            Pawn result = ColonyAnimalLister.FindBondedAnimal(pawn);
+            if (result != null) return result;
+            else
             {
-                Pawn pawn2 = allPawnsSpawned[i];
-                if (pawn2.RaceProps.Animal && pawn2.Faction == pawn.Faction 
-                    && pawn.RaceProps.predator 
-                    && pawn.RaceProps.wildness <= 0.3 
-                    && pawn.BodySize <= 0.3 
-                    && pawn.RaceProps.petness >= 0.1 //catlikes.
-                    && pawn2 != pawn && !pawn2.IsBurning() 
-                    && !pawn2.InAggroMentalState 
-                    && pawn.CanReserveAndReach(pawn2, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false))
+                tmpAnimals.Clear();
+                List<Pawn> allPawnsSpawned = pawn.Map.mapPawns.AllPawnsSpawned;
+                for (int i = 0; i < allPawnsSpawned.Count; i++)
                 {
-                    tmpAnimals.Add(pawn2);
+                    Pawn pawn2 = allPawnsSpawned[i];
+                    if (pawn2.RaceProps.Animal && pawn2.Faction == pawn.Faction
+                        && pawn2.RaceProps.petness >= 0.1
+                        && !(pawn2.CurJob.def == JobDefOf.LayDown)
+                        && pawn2 != pawn && !pawn2.IsBurning()
+                        && !pawn2.InAggroMentalState
+                        && pawn.CanReserveAndReach(pawn2, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false))
+                    {
+                        tmpAnimals.Add(pawn2);
+                    }
                 }
+                if (!tmpAnimals.Any<Pawn>())
+                {
+                    return null;
+                }
+                result = tmpAnimals.RandomElement<Pawn>();
+                tmpAnimals.Clear();
+
+                return result;
             }
-            if (!tmpAnimals.Any<Pawn>())
-            {
-                return null;
-            }
-            Pawn result = tmpAnimals.RandomElement<Pawn>();
-            tmpAnimals.Clear();
-            return result;
         }
     }
 }

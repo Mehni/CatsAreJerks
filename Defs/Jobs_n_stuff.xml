@@ -12,11 +12,27 @@
     <!-- Whether or not the Job can be "paused" without having to start over again. -->
     <!-- Mostly used for hunting, hauling, refueling.  Defaults to true.-->
     <suspendable>false</suspendable>
+    <joyDuration>3000</joyDuration>
+    <joyGainRate>1</joyGainRate>
+    <joyKind>Social</joyKind>
   </JobDef>
 
   <JobDef>
     <defName>DeliverKill</defName>
     <driverClass>CatsAreJerks.JobDriver_DeliverKillToAppeaseFriend</driverClass>
-    <reportString>deliver presents</reportString>
+    <reportString>delivering presents.</reportString>
   </JobDef>
+
+  <JoyGiverDef>
+    <defName>PetTheCat</defName>
+    <giverClass>CatsAreJerks.JoyGiver_PetCats</giverClass>
+    <baseChance>2.3</baseChance>
+    <jobDef>PetTheCat</jobDef>
+    <desireSit>false</desireSit>
+    <joyKind>Social</joyKind>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </JoyGiverDef>
+
 </Defs>
