@@ -33,21 +33,29 @@ namespace CatsAreJerks
             if (!prey.RaceProps.canBePredatorPrey || !prey.RaceProps.IsFlesh || prey.BodySize > predator.RaceProps.maxPreyBodySize)
             {
                 __result = false;
+                return false;
+            }
+
+            foreach (ThinkNode current in predator.thinker.MainThinkNodeRoot.ChildrenRecursive)
+            {
+                Log.Message(current.ToString());
             }
 
             if (!prey.Downed)
             {
-                if (prey.kindDef.combatPower > 2f * predator.kindDef.combatPower)
-                {
-                    __result = false;
-                }
-                //vanilla bug
-                float num = prey.kindDef.combatPower * prey.health.summaryHealth.SummaryHealthPercent * (prey.ageTracker.CurLifeStage.bodySizeFactor * prey.RaceProps.baseBodySize);
-                float num2 = predator.kindDef.combatPower * predator.health.summaryHealth.SummaryHealthPercent * (predator.ageTracker.CurLifeStage.bodySizeFactor * predator.RaceProps.baseBodySize);
-                if (num > 0.85f * num2)
-                {
-                    __result = false;
-                }
+            if (prey.kindDef.combatPower > 2f * predator.kindDef.combatPower)
+            {
+                __result = false;
+                return false;
+            }
+            //vanilla bug
+            float num = prey.kindDef.combatPower * prey.health.summaryHealth.SummaryHealthPercent * (prey.ageTracker.CurLifeStage.bodySizeFactor * prey.RaceProps.baseBodySize);
+            float num2 = predator.kindDef.combatPower * predator.health.summaryHealth.SummaryHealthPercent * (predator.ageTracker.CurLifeStage.bodySizeFactor * predator.RaceProps.baseBodySize);
+            if (num > 0.85f * num2)
+            {
+                __result = false;
+                return false;
+            }
             }
             __result = (predator.Faction == null || prey.Faction == null || predator.HostileTo(prey)) && (predator.Faction != Faction.OfPlayer || prey.Faction != Faction.OfPlayer) && (!predator.RaceProps.herdAnimal || predator.def != prey.def);
             return false;

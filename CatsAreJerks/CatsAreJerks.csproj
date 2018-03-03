@@ -57,7 +57,7 @@
     <Compile Include="JobDriver_PetTheCat.cs" />
     <Compile Include="JobGiver_DeliverKillToAppeaseFriend.cs" />
     <Compile Include="JobGiver_DisturbThePeace.cs" />
-    <Compile Include="JobGiver_PetCats.cs" />
+    <Compile Include="JoyGiver_PetCats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThinkNode_ConditionalCatLike.cs" />
     <Compile Include="ThinkNode_ConditionalHasFullHealthcs.cs" />

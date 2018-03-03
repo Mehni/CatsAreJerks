@@ -5,16 +5,21 @@
   
   <ThinkTreeDef>
     <defName>CatsAreJerks</defName>
-    <insertTag>Animal_PreMain</insertTag>
-    <thinkRoot Class="ThinkNode_ConditionalHasFaction">
-      <subNodes>
-      <li Class="CatsAreJerks.ThinkNode_ConditionalNightTime">
-        <subNodes>
-        <li Class="CatsAreJerks.JobGiver_DisturbThePeace"/>
-      </subNodes>
-      </li>
-      </subNodes>
-      </thinkRoot>
+    <insertTag>Animal_PreWander</insertTag>
+      <thinkRoot Class="ThinkNode_ConditionalHasFaction">
+          <subNodes>
+            <li Class="CatsAreJerks.ThinkNode_ConditionalCatLike">
+              <subNodes>
+                <li Class="ThinkNode_ChancePerHour_Constant">
+                <mtbHours>10</mtbHours>
+                  <subNodes>
+                    <li Class="CatsAreJerks.JobGiver_DeliverKillToAppeaseFriend"/>
+                  </subNodes>
+                </li>
+              </subNodes>
+            </li>
+          </subNodes>
+        </thinkRoot>
   </ThinkTreeDef>
 
           <!-- <li Class="ThinkNode_ConditionalOfPlayerFaction">

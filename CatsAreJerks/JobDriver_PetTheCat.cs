@@ -92,6 +92,9 @@ namespace CatsAreJerks
                 {
                     if (Find.TickManager.TicksGame > this.startTick + this.job.def.joyDuration)
                     {
+                        Pawn petter = this.pawn;
+                        Pawn pettee = (Pawn)this.pawn.CurJob.targetA.Thing;
+                        pettee.interactions.TryInteractWith(petter, InteractionDefOf.Nuzzle);
                         this.EndJobWith(JobCondition.Succeeded);
                         return;
                     }
@@ -103,9 +106,6 @@ namespace CatsAreJerks
             };
             play.AddFinishAction(delegate
             {
-                Pawn petter = this.pawn;
-                Pawn pettee = (Pawn)this.pawn.CurJob.targetA.Thing;
-                pettee.interactions.TryInteractWith(petter, InteractionDefOf.Nuzzle);
                 JoyUtility.TryGainRecRoomThought(this.pawn);
             });
             yield return play;

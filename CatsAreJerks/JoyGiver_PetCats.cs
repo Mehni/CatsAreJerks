@@ -15,13 +15,11 @@ namespace CatsAreJerks
         public override Job TryGiveJob(Pawn pawn)
         {
             //find a cat
-            Log.Message(pawn + " is seeking a cat!");
             Pawn cat = FindCatToPet(pawn);
 
             //if there is no cat, or we can't reach the cat, we don't do a job.
             if (cat == null || !pawn.CanReserveAndReach(cat, PathEndMode.Touch, Danger.Deadly, 1, -1, null, false))
             {
-                Log.Message(pawn + " did not find a cat. Sad day.");
                 return null;
             }
 
