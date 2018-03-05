@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <Patch>
-    <Operation Class="PatchOperationAdd">
-        <xpath>/Defs/ThinkTreeDef[defName = "Animal"]/thinkRoot[@Class="ThinkNode_Priority"]</xpath>
+    <Operation Class="PatchOperationReplace">
+    <!-- Adding or inserting gets added to the bottom of the list/thinktree, which defeats the purpose.
+    While we could make an entirely custom thinktree for our animal, we could simply replace the first node with ours and then re-insert the original one. -->
+        <xpath>/Defs/ThinkTreeDef[defName = "Animal"]/thinkRoot[@Class="ThinkNode_Priority"]/subNodes/li[contains(@Class,'ThinkNode_ConditionalMustKeepLyingDown')]</xpath>
         <value>
             <li Class="ThinkNode_ConditionalOfPlayerFaction">
                 <subNodes>
@@ -20,6 +22,17 @@
                         </subNodes>
                     </li>
                 </subNodes>
+            </li>
+            <li Class="ThinkNode_ConditionalMustKeepLyingDown">
+                        <subNodes>
+                <!-- Do a queued job if possible -->
+                <li Class="ThinkNode_QueuedJob">
+                <inBedOnly>true</inBedOnly>
+                </li>
+
+                <!-- Keep lying down -->
+                <li Class="JobGiver_KeepLyingDown" />
+            </subNodes>
             </li>
         </value>
     </Operation>

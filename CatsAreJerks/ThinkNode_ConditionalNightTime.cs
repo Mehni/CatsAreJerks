@@ -12,9 +12,6 @@ namespace CatsAreJerks
     {
         protected override bool Satisfied(Pawn pawn)
         {
-            Log.Message("conditional nighttime");
-            //int num = GenLocalDate.HourOfDay(pawn);
-            // n > 1 || n < 3
             if (GenLocalDate.DayPercent(pawn) > 0.024 && GenLocalDate.DayPercent(pawn) < 0.048)
             {
                 return true;

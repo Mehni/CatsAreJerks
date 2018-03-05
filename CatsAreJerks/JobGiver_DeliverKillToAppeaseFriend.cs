@@ -47,7 +47,7 @@ namespace CatsAreJerks
             Corpse corpse = null;
             Building_Grave building_Grave = null;
             //see if there's a corpse laying around or available for digging up
-            if (Rand.Range(0f, 1f) > 0.1f)
+            if (Rand.Range(0f, 1f) > 0.05f)
             {
                 corpse = (Corpse)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Corpse), PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, delegate (Thing x)
                 {

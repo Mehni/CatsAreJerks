@@ -36,11 +36,6 @@ namespace CatsAreJerks
                 return false;
             }
 
-            foreach (ThinkNode current in predator.thinker.MainThinkNodeRoot.ChildrenRecursive)
-            {
-                Log.Message(current.ToString());
-            }
-
             if (!prey.Downed)
             {
             if (prey.kindDef.combatPower > 2f * predator.kindDef.combatPower)
